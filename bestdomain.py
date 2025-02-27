@@ -2,11 +2,25 @@ import os
 import requests
 
 def get_ip_list(url):
+    """根据 URL 获取 IP 列表，处理两种格式的 IP 地址"""
     response = requests.get(url)
     response.raise_for_status()
-    return response.text.strip().split('\n')
+    content = response.text.strip()
+
+    # 判断是否是逗号分隔的 IP 地址
+    if ',' in content:
+        # 逗号分隔的 IP 地址格式
+        ip_list = content.split(',')
+    else:
+        # 每行一个 IP 地址格式
+        ip_list = content.split('\n')
+    
+    # 去除每个 IP 前后的空格
+    ip_list = [ip.strip() for ip in ip_list]
+    return ip_list
 
 def get_cloudflare_zone(api_token):
+    """获取 Cloudflare 区域 ID 和域名"""
     headers = {
         'Authorization': f'Bearer {api_token}',
         'Content-Type': 'application/json',
@@ -19,6 +33,7 @@ def get_cloudflare_zone(api_token):
     return zones[0]['id'], zones[0]['name']
 
 def delete_existing_dns_records(api_token, zone_id, subdomain, domain):
+    """删除 Cloudflare 中现有的 DNS 记录"""
     headers = {
         'Authorization': f'Bearer {api_token}',
         'Content-Type': 'application/json',
@@ -36,6 +51,7 @@ def delete_existing_dns_records(api_token, zone_id, subdomain, domain):
             print(f"Del {subdomain}:{record['id']}")
 
 def update_cloudflare_dns(ip_list, api_token, zone_id, subdomain, domain):
+    """更新 Cloudflare DNS 记录"""
     headers = {
         'Authorization': f'Bearer {api_token}',
         'Content-Type': 'application/json',
@@ -60,21 +76,24 @@ if __name__ == "__main__":
     
     # 示例URL和子域名对应的IP列表
     subdomain_ip_mapping = {
-        'yxip': 'https://jlips.jzhou.dns.navy/yxip.txt?token=JLiptq',
-        'pyip': 'https://jlips.jzhou.dns.navy/pyipJP.txt?token=JLiptq',
+        'yxip': 'https://ip.164746.xyz/ipTop10.html',  # 逗号分隔的 IP
+        'pyip': 'https://jlips.jzhou.dns.navy/pyipJP.txt?token=JLiptq',  # 按行分隔的 IP
         # 添加更多子域名和对应的IP列表URL
     }
     
     try:
-        # 获取Cloudflare域区ID和域名
+        # 获取 Cloudflare 域区 ID 和域名
         zone_id, domain = get_cloudflare_zone(api_token)
         
         for subdomain, url in subdomain_ip_mapping.items():
-            # 获取IP列表
+            # 获取 IP 列表
             ip_list = get_ip_list(url)
-            # 删除现有的DNS记录
+            print(f"IP List for {subdomain}: {ip_list}")  # 打印 IP 列表，调试用
+            
+            # 删除现有的 DNS 记录
             delete_existing_dns_records(api_token, zone_id, subdomain, domain)
-            # 更新Cloudflare DNS记录
+            
+            # 更新 Cloudflare DNS 记录
             update_cloudflare_dns(ip_list, api_token, zone_id, subdomain, domain)
             
     except Exception as e:

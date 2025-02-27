@@ -60,7 +60,7 @@ if __name__ == "__main__":
     
     # 示例URL和子域名对应的IP列表
     subdomain_ip_mapping = {
-        'yxip': 'https://ip.164746.xyz/ipTop10.html',
+        'yxip': 'https://jlips.jzhou.dns.navy/yxipJP.txt?token=JLiptq',
         'pyip': 'https://jlips.jzhou.dns.navy/pyipJP.txt?token=JLiptq',
         # 添加更多子域名和对应的IP列表URL
     }

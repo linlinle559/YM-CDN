@@ -76,7 +76,7 @@ if __name__ == "__main__":
     
     # 示例URL和子域名对应的IP列表
     subdomain_ip_mapping = {
-        'yxip': 'https://ip.164746.xyz/ipTop10.html',  # 逗号分隔的 IP
+        'ksip': 'https://ip.164746.xyz/ipTop10.html',  # 逗号分隔的 IP
         'pyip': 'https://jlips.jzhou.dns.navy/pyipJP.txt?token=JLiptq',  # 按行分隔的 IP
         # 添加更多子域名和对应的IP列表URL
     }
